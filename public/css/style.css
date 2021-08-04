@@ -1,0 +1,65 @@
+.action{
+    display: flex;
+    float: right;
+}
+.action a{
+    margin-right: 5px;
+}
+.conteudo{
+    width: 100%; 
+    height: 600px; 
+    font-size: 14px; 
+    line-height: 18px; 
+    border: 1px solid #dddddd; 
+    padding: 10px;
+}
+.img-panel{
+    max-width: 500px;
+}
+.ms-container{
+    width: 100% !important;
+}
+.pagination{
+    float: right;
+}
+.folder * {
+    width: 100px;
+}
+.folder {
+    float: left;
+    width: 100px;
+    height: 152px;
+/* //padding: 20px; */
+    margin-right: 50px;
+    margin-bottom: 70px;
+    border-radius: 2px;
+/* //overflow: hidden; */
+    cursor: pointer;
+}
+.folder:hover p.cooltip {
+    opacity: 1;
+    top: 0;
+}
+.folder * {
+    text-align: center;
+}
+.folder i {
+    margin: 0;
+    font-size: 100px;
+    color: #E4BD28;
+    text-shadow: 1px 1px #4b3b02;
+}
+.folder i.file-folder {
+    color: #A0A0A0;
+    text-shadow: 1px 1px #353535;
+}
+.folder h1 {
+    position: relative;
+    display: block;
+    top: -37px;
+    font-size: 20px;
+    font-weight: 400;
+}
+.direct-chat-messages {
+    height: 100%;
+}

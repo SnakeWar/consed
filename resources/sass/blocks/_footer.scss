@@ -1,0 +1,29 @@
+.footer-site {
+	background-color: $orange;
+	padding: 30px;
+
+	.list-networks {
+		@extend .list-unstyled, .d-flex;
+
+		margin-bottom: 0;
+
+		li {
+			margin-right: 20px;
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			a {
+				
+				img {
+					width: 30px;
+
+					@media(min-width: 1200px) {
+						width: 40px;
+					}
+				}
+			}
+		}
+	}
+}

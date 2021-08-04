@@ -1,0 +1,18 @@
+// Modules
+@import "~bootstrap/scss/bootstrap";
+@import "~owl.carousel/dist/assets/owl.carousel.min.css";
+@import "~@fancyapps/fancybox/dist/jquery.fancybox.min.css";
+@import "~animatewithsass";
+
+// Communs
+@import "communs/variables";
+@import "communs/communs";
+@import "communs/fonts";
+@import "communs/base";
+
+// Blocks
+@import "blocks/header";
+@import "blocks/footer";
+
+// Sections
+@import "sections/_section_slide";

@@ -1,0 +1,15 @@
+body {
+
+	a {
+		&:hover {
+			text-decoration: none;
+		}
+	}
+
+	button {
+		&:focus {
+			outline: none;
+		}
+	}
+
+}

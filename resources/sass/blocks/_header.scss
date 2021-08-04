@@ -1,0 +1,250 @@
+.header-site {
+	@media(min-width: 992px) {
+		box-shadow: 0 0 6px 3px rgba(0,0,0,.18);
+	}
+	
+	.container-header {
+		@extend .d-flex, .justify-content-between, .align-items-center;
+
+		padding: 15px;
+		box-shadow: 0 0 6px 3px rgba(0,0,0,.18);
+
+		@media(min-width: 992px) {
+			max-width: 960px;
+		    width: 100%;
+		    padding: 0;
+		    margin-right: auto;
+		    margin-left: auto;
+		    box-shadow: unset;
+		    padding-top: 20px;
+		}
+
+		@media(min-width: 1200px) {
+			max-width: 1140px;
+		}
+
+		.logo {
+
+			@media(min-width: 992px) {
+				margin-right: 50px;
+			}
+
+			@media(min-width: 1200px) {
+				margin-right: 100px;
+			}
+
+			img {
+				width: 80px;
+
+				@media(min-width: 992px) {
+					width: 250px;
+				}
+
+				@media(min-width: 1200px) {
+					width: 300px;
+				}
+			}
+		}
+
+		.menu-link {
+			@extend .d-lg-none;
+
+			img {
+				width: 30px;
+			}
+		}
+
+		.panel {
+			background-color: rgba(246, 142, 51, .92);
+			text-align: right;
+			position: fixed;
+			top: 0;
+			right: -90%;
+			width: 90%;
+			padding: 15px;
+			z-index: 2;
+
+			@media(min-width: 992px) {
+				background-color: #fff;
+				position: static;
+				width: 100%;
+				padding: 0;
+			}
+
+			.menu-link {
+				margin-bottom: 30px;
+				display: block;
+			}
+
+			ul {
+				@extend .list-unstyled, .d-lg-inline-flex;
+				
+				margin-bottom: 0;
+
+				@media(min-width: 992px) {
+					margin-left: auto;
+				}
+
+				li {
+					margin-bottom: 20px;
+
+					@media(min-width: 992px) {
+						margin-bottom: 0;
+						margin-right: 50px;
+						padding-bottom: 16px;
+
+						&:hover,
+						&.active {
+							border-bottom: 4px solid $orange;
+							padding-bottom: 12px;
+						}
+
+						&:last-child {
+							margin-right: 0;
+						}
+					}
+
+					@media(min-width: 1200px) {
+						padding-bottom: 36px;
+
+						&:hover,
+						&.active {
+							border-bottom: 6px solid $orange;
+							padding-bottom: 30px;
+						}
+					}
+
+
+					a {
+						@extend .proximaRegular;
+
+						color: #fff;
+						font-size: 18px;
+
+						@media(min-width: 992px) {
+							font-size: 16px;
+							color: $gray-dk;
+						}
+					}
+				}
+			}
+		}
+
+		.form-login {
+			@extend .d-flex, .flex-column, .align-items-end;
+
+			margin-bottom: 50px;
+
+			.label-checkbox {
+				@extend .proximaRegular;
+
+				margin-bottom: 0;
+				color: #fff;
+				font-size: 14px;
+				margin-right: 5px;
+			}
+
+			.form-group {
+				@extend .d-flex, .align-items-center;
+
+				margin-bottom: 20px;
+
+				@media(min-width: 992px) {
+					margin-bottom: 0;
+					margin-right: 16px;
+				}
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				.btn-login {
+					@extend .proximaBold;
+
+					border-radius: 19px;
+					font-size: 14px;
+					height: 38px;
+					width: 102px;
+					border: none;
+					background-color: #fff;
+					color: $orange;
+
+					@media(min-width: 992px) {
+						background-color: $orange;
+						color: #fff;
+					}
+				}
+
+				&.custom-checkbox {
+					justify-content: space-around;
+
+					.custom-control-input {
+
+						&:focus ~ .custom-control-label {
+							&:before {
+								box-shadow: unset;
+							}
+						}
+
+						&:checked ~ .custom-control-label {
+
+							&:after {
+								background-image: url($assets_img + 'checkbox.svg');
+							}
+
+							&:before {
+								background-color: transparent;
+								border: none;
+							}
+						}
+					}
+
+					.custom-control-label {
+						@extend .proximaRegular;
+
+						color: $gray-lt;
+						font-size: 11px;
+
+						&:after {
+							border-radius: 3px;
+							background-color: #F5F8FC;
+							border: none;
+							top: -0.05rem;
+
+						}
+
+						&:before {
+							border: none;
+						}
+					}
+				}
+
+				.form-control {
+					width: 186px;
+					height: 38px;
+					border-radius: 19px;
+					border: 1px solid $orange;
+					background-size: 18px;
+					background-position: 15px 50%;
+					background-repeat: no-repeat;
+					padding-left: 40px;
+
+					&::placeholder {
+						@extend .proximaRegular;
+
+						font-size: 12px;
+						color: $gray-lt;
+					}
+
+					&#login {
+						background-image: url($assets_img + 'icon-people.svg');
+					}
+
+					&#senha {
+						background-image: url($assets_img + 'icon-lock.svg');
+					}
+				}
+			}
+		}
+	}
+}
