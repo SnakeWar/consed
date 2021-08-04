@@ -40,7 +40,7 @@
         </div>
         <div class="col-lg-6">
           <div class="form-group">
-            <label for="inputSegmento">Tipo</label>
+            <label for="inputSegmento">Destaque</label>
             <select class="form-control select2" name="type">
               <option value="" {{ !app('request')->query('type') ? '' : 'selected'}}>Todos</option>
               <option value="0" {{ app('request')->query('type') === '0'  ? 'selected' : '' }}>Secundária</option>

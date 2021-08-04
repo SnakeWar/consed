@@ -32,9 +32,59 @@
             @endif
             <div class="box-body">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('visible') ? 'has-error' : '' }}">
+                            <label for="inputVisible">Notícia Pública?</label>
+                            <input type="checkbox" name="visible" class="form-control" id="inputVisible">
+                            @if ($errors->has('visible'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('visible') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
                         <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-                            <label for="inputTitle">Título</label>
+                            <label for="inputGallery">Galeria de Imagens</label>
+                            <select name="gallery_id" id="inputGallery">
+                                <option value=""></option>
+                                @foreach ($galleries as $item)
+                                    <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->gallery_id) ? 'selected' : '') : '' }}>{{ $item->title }}</option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('title'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('title') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('tag_id') ? 'has-error' : '' }}">
+                            <label for="inputTag">Chapéu</label>
+                            <select name="tag_id" id="inputTag">
+                                <option value=""></option>
+                                @foreach ($tags as $item)
+                                    <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->tag_id) ? 'selected' : '') : '' }}>{{ $item->title }}</option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('tag_id'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('tag_id') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+                            <label for="inputTitle">Título*</label>
                             <input type="text" name="title" class="form-control" id="inputTitle" placeholder="Título da Postagem" value="{{ isset($post) ? $post->title : old('title') }}">
                             @if ($errors->has('title'))
                                 <span class="help-block">
@@ -43,87 +93,24 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="form-group @error('published_at') has-error @enderror">
-                            <label for="inputData">Data de publicação</label>
-                            <input type="text" name="published_at" class="form-control datetimepicker" id="inputData" placeholder="" value="{{ isset($post) ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y H:i') : old('published_at') }}">
-                            @error('published_at')
-                            <span class="help-block">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                            <label for="inputTitle">Descrição</label>
-                            <input type="text" name="description" class="form-control" id="inputTitle" placeholder="Descrição da Postagem" value="{{ isset($post) ? $post->description : old('description') }}">
-                            @if ($errors->has('description'))
+                        <div class="form-group {{ $errors->has('subtitle') ? 'has-error' : '' }}">
+                            <label for="inputSubtitle">Subtítulo</label>
+                            <input type="text" name="subtitle" class="form-control" id="inputSubtitle" placeholder="Descrição da Postagem" value="{{ isset($post) ? $post->description : old('description') }}">
+                            @if ($errors->has('subtitle'))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('description') }}</strong>
+                                <strong>{{ $errors->first('subtitle') }}</strong>
                             </span>
                             @endif
                         </div>
                     </div>
                 </div>
-
-                @if(empty($user->category_id))
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label for="inputSegmento">Categoria</label>
-                                <select class="form-control select2" name="category_id" id="inputSegmento" @if(!empty($user->category_id)) disabled @endif style="width: 100%;">
-                                    @if(!empty($user->category_id))
-                                        @foreach ($categories as $item)
-                                            @if($item->id == $user->category_id)
-                                                <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $user->category_id) ? 'selected' : '') : '' }}>{{ $item->title }}</option>
-                                            @endif
-                                        @endforeach
-                                    @endif
-
-                                    @if(empty($user->category_id))
-                                        @foreach ($categories as $item)
-                                            <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->category->id) ? 'selected' : '') : '' }}>{{ $item->title }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label for="inputSegmento">Tipo</label>
-                                <select class="form-control select2" name="type" id="inputSegmento" style="width: 100%;">
-                                        <option value="0" {{ isset($post) ? (($post->type == 0) ? 'selected' : '') : '' }}>Secundária</option>
-                                        <option value="1" {{ isset($post) ? (($post->type == 1) ? 'selected' : '') : '' }}>Destaque</option>
-                                        <option value="2" {{ isset($post) ? (($post->type == 2) ? 'selected' : '') : '' }}>Outra</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="form-group @error('content') has-error @enderror">
-                            <label for="inputContent">Descrição</label>
-                            <textarea name="content" class="form-control" id="editor1" placeholder="Descrição da Postagem" rows="4">{{ isset($post) ? $post->content : old('content') }}</textarea>
-                            @error('content')
-                            <span class="help-block">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
                         <div class="form-group @error('file') has-error @enderror">
-                            <label for="inputImage">Imagem</label>
+                            <label for="inputImage">Capa da Notícia*</label>
                             <input type="file" name="file" class="form-control" id="inputImage">
                             @error('file')
                             <span class="help-block">
@@ -137,26 +124,62 @@
                             @endif
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group @error('content') has-error @enderror">
+                            <label for="inputContent">Conteúdo*</label>
+                            <textarea name="content" class="form-control" id="editor1" placeholder="" rows="4">{{ isset($post) ? $post->content : old('content') }}</textarea>
+                            @error('content')
+                            <span class="help-block">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-6">
-                        <div class="form-group">
-                            <label for="inputSegmento">Posição da imagem</label>
-                            <select class="form-control select2" name="image_position" id="inputSegmento" style="width: 100%;">
-                                <option value="top" {{ isset($post) ? (($post->image_position == 'top') ? 'selected' : '') : '' }}>Inicio</option>
-                                <option value="bottom" {{ isset($post) ? (($post->image_position == 'bottom') ? 'selected' : '') : '' }}>Fim</option>
+                        <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+                            <label for="inputGallery">Tags*</label>
+                            <select name="gallery_id" id="inputGallery" multiple>
+                                <option value=""></option>
+                                @foreach ($galleries as $item)
+                                    <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->gallery_id) ? 'selected' : '') : '' }}>{{ $item->title }}</option>
+                                @endforeach
                             </select>
+                            @if ($errors->has('title'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('title') }}</strong>
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="form-group {{ $errors->has('image_credits') ? 'has-error' : '' }}">
-                            <label for="inputTitle">Creditos da imagem</label>
-                            <input type="text" name="image_credits" class="form-control" id="inputTitle" placeholder="Creditos da imagem" value="{{ isset($post) ? $post->image_credits : old('image_credits') }}">
-                            @if ($errors->has('image_credits'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('image_credits') }}</strong>
+                        <div class="form-group @error('copyright_id') has-error @enderror">
+                            <label for="inputData">Direito autoral*</label>
+                            <input type="text" name="copyright_id" class="form-control datetimepicker" id="inputData" placeholder="" value="{{ isset($post) ? $post->publication : old('copyright_id') }}">
+                            @error('copyright_id')
+                            <span class="help-block">
+                                <strong>{{ $message }}</strong>
                             </span>
-                            @endif
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group @error('publication') has-error @enderror">
+                            <label for="inputData">Publicada em*</label>
+                            <input type="text" name="published_at" class="form-control datetimepicker" id="inputData" placeholder="" value="{{ isset($post) ? \Carbon\Carbon::parse($post->publication)->format('d/m/Y H:i') : old('publication') }}">
+                            @error('publication')
+                            <span class="help-block">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                     </div>
                 </div>

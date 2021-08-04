@@ -22,6 +22,7 @@ class CreateNewsTable extends Migration
             $table->longText('content');
             $table->string('slug');
             $table->dateTime('publication');
+            $table->string('file');
             $table->timestamps();
             $table->bigInteger('copyright_id')->unsigned();
             $table->bigInteger('views')->default(0);
