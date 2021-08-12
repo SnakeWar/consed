@@ -16,7 +16,7 @@
 @section('content')
     <div class="box">
         <div class="box-header">
-            <a href="{{ route('categories.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
+            <a href="{{ route('tags.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
         </div>
         @if(session()->has('success'))
             <div class="box-body">

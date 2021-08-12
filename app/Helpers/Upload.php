@@ -4,7 +4,22 @@
  * Upload helper
  *
  */
+if(!function_exists('imageUpload')){
+    function imageUpload($images, $dir){
 
+    $uploadImages = $images->store($dir, 'public');
+
+    return $uploadImages;
+}
+}
+if(!function_exists('imagesUpload')){
+    function imagesUpload($images, $dir, $imageColumn = null){
+    foreach ($images as $image) {
+        $uploadImages[] = [$imageColumn => $image->store($dir, 'public')];
+    }
+    return $uploadImages;
+}
+}
 if(!function_exists('upload')){
     function upload($request, $dir)
     {

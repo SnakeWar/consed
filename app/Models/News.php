@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\User;
-use App\Models;
 
-class New extends Model
+class News extends Model
 {
     //use SoftDeletes;
     protected $table = "news";
@@ -34,6 +33,20 @@ class New extends Model
     {
         return $this->belongsTo(Tag::class);
     }
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'resource', 'tagging')
+        ->withTimestamps()
+        ;
+    }
+    public function sections()
+    {
+        return $this->belongsToMany(Section::class);
+    }
+    public function photo()
+    {
+        return $this->belongsTo(GalleryImage::class, 'cover_id');
+    }
     public function gallery()
     {
         return $this->belongsTo(Gallery::class);
@@ -56,6 +69,6 @@ class New extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'author_id');
     }
 }

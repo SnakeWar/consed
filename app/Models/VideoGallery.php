@@ -3,20 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class Tag extends MyModel
+class VideoGallery extends Model
 {
-    //use SoftDeletes;
-
+    protected $table = "video_gallery";
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
-    
-    public function setNameAttribute($value)
+
+    public function setTitleAttribute($value)
     {
         $slug = Str::slug($value);
         $matchs = $this->uniqueSlug($slug);
-        $this->attributes['name'] = $value;
+        $this->attributes['title'] = $value;
         $this->attributes['slug'] = $matchs ? $slug . '-' . $matchs : $slug;
     }
     public function uniqueSlug($slug)
@@ -24,15 +22,13 @@ class Tag extends MyModel
         $matchs = $this->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->count();
         return $matchs;
     }
-    public function news()
+    public function photo()
     {
-        return $this->morphedByMany(News::class, 'resource', 'tagging');
+        return $this->belongsTo(GalleryImage::class, 'cover_id');
     }
-    public function news_tag()
+    public function videos()
     {
-        return $this->hasMany(News::class);
+        return $this->hasMany(VideoGalleryItem::class, 'gallery_id');
     }
-//    function canDelete(){
-//        return $this->segments->count() == 0;
-//    }
+    
 }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TagFormRequest;
-use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     protected $model;
     protected $title;
@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function __construct(Tag $model)
     {
         $this->model = $model;
-        $this->title = 'Categorias';
+        $this->title = 'Tags';
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryController extends Controller
 
         $data = ['tags' => $tags, 'title' => $this->title];
 
-        return view('admin.categories.index')->with($data);
+        return view('admin.tags.index')->with($data);
     }
 
     /**

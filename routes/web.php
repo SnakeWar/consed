@@ -46,6 +46,22 @@ Route::group(['middleware' => ['auth', 'log'], 'namespace' => 'Admin', 'prefix' 
 
     Route::resource('pages', 'PageController')->middleware('can:read_pages');
     Route::post('pages/ativo/{id}', 'PageController@ativo')->name('pages.ativo')->middleware('can:update_pages');
+    
+    Route::resource('news', 'NewController')->middleware('can:read_news');
+    Route::post('news/destaque/{id}', 'NewController@destaque')->name('news.destaque')->middleware('can:update_news');
+    Route::post('news/ativo/{id}', 'NewController@ativo')->name('news.ativo')->middleware('can:update_news');
+
+    Route::resource('tags', 'TagController')->middleware('can:read_tags');
+
+    Route::resource('videos_gallery', 'VideoGalleryController')->middleware('can:read_videos_gallery');
+    Route::delete('videos_gallery/removeVideo/{id}', 'VideoGalleryController@removeVideo')->name('videos_gallery.removeVideo')->middleware('can:delete_videos_gallery');
+
+    Route::resource('gallery', 'GalleryController')->middleware('can:read_gallery');
+    Route::delete('gallery/removePhoto/{id}', 'GalleryController@removePhoto')->name('gallery.removePhoto')->middleware('can:delete_gallery');
+
+    Route::resource('copyrights', 'CopyrightController')
+    ->middleware('can:read_copyrights') 
+    ;
 
     Route::resource('downloads', 'DownloadController')->middleware('can:read_downloads');
 
@@ -101,11 +117,12 @@ Route::group(['middleware' => ['auth', 'log'], 'namespace' => 'Admin', 'prefix' 
 
 });
 
-Route::any('/ckfinder/connector', '\CKSource\CKFinderBridge\Controller\CKFinderController@requestAction')
+Route::group(['middleware' => 'auth'], function () {
+    Route::any('/ckfinder/connector', '\CKSource\CKFinderBridge\Controller\CKFinderController@requestAction')
     ->name('ckfinder_connector');
 
-Route::any('/ckfinder/browser', '\CKSource\CKFinderBridge\Controller\CKFinderController@browserAction')
+    Route::any('/ckfinder/browser', '\CKSource\CKFinderBridge\Controller\CKFinderController@browserAction')
     ->name('ckfinder_browser');
-
+});
 Auth::routes();
 

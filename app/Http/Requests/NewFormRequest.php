@@ -27,7 +27,7 @@ class NewFormRequest extends FormRequest
             'title' => 'required|max:200',
             'publication' => 'required',
             'content'   => 'required',
-            'file'     => 'image|max:2048',
+            //'file'     => 'image|max:2048',
             //'author' => 'required'
         ];
     }

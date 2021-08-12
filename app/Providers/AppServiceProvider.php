@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Relation::morphMap([
+            'consisti_news_tag' => 'App\Models\News',
+            'consisti_gallery_tag' => 'App\Models\Gallery',
+            'consisti_video_gallery_tag' => 'App\Models\VideoGallery',
+        ]);
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
 
         Validator::extend('base64_image',function($attribute, $value, $params, $validator) {

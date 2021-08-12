@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\PostUpdateFormRequest;
-use App\Http\Requests\PostFormRequest;
-use Illuminate\Http\Request;
 use App\Models\Tag;
-use App\Models\New;
-use App\Models\ProductPhoto;
+use App\Models\News;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\NewFormRequest;
+use App\Models\Copyright;
+use App\Models\Gallery;
+use App\Models\Section;
+use App\Models\VideoGallery;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class PostController extends Controller
+class NewController extends Controller
 {
     protected $model;
     protected $title;
@@ -22,30 +23,17 @@ class PostController extends Controller
      *
      * @return void
      */
-    public function __construct(New $new)
+    public function __construct(News $new)
     {
         $this->model = $new;
         $this->title = "Notícias";
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
 
-        $posts = $this
-            ->model
-            ->orderBy('id', 'desc')
-            ->when(!empty($user->category_id), function ($q) use ($user) {
-                return $q->where('category_id', $user->category_id)
-                    ->where('user_id', $user->id);
-            })
-            ->when($request->has('type') && ($request->query('type') || $request->query('type') === '0'), function ($q) use ($request) {
-                return $q->where('type', intval($request->query('type')));
-            })
-            ->when($request->has('title') && $request->query('title'), function ($q) use ($request) {
-                return $q->where('title', 'LIKE', "%{$request->query('title')}%");
-            })
-            ->paginate(10);
+        $posts = $this->model->orderBy('id', 'desc')->with('user')->paginate(50);
 
         $data = ['lista' => $posts, 'title' => $this->title];
 
@@ -61,14 +49,16 @@ class PostController extends Controller
     {
         $user = Auth::user();
         $tags = Tag::orderBy('id', 'desc')->get();
+        $sections = Section::orderBy('id', 'desc')->get();
         $galleries = Gallery::orderBy('id', 'desc')->get();
         $videosgallery = VideoGallery::orderBy('id', 'desc')->get();
         $copyright = Copyright::orderBy('id', 'desc')->get();
         $data = [
             'title' => $this->title,
-            'subtitle' => 'Criar postagem',
+            'subtitle' => 'Criar notícia',
             'user' => $user,
             'tags' => $tags,
+            'sections' => $sections,
             'galleries' => $galleries,
             'videosgallery' => $videosgallery,
             'copyright' => $copyright
@@ -82,34 +72,41 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostFormRequest $request)
+    public function store(NewFormRequest $request)
     {
         $dataForm = $request->all();
-        $dataForm['published_at'] = Carbon::createFromFormat('d/m/Y H:i', $dataForm['published_at']);
-        $dataForm['description'] = !empty($dataForm['description']) ? $dataForm['description'] : '';
+        $tags = $request->get('tags', null);
+        $sections = $request->get('sections', null);
+        if(isset($dataForm['visible'])){
+            $dataForm['visible'] = 1;
+        }else{
+            $dataForm['visible'] = 0;
+        }
+        //dd($dataForm);
+        $dataForm['publication'] = Carbon::createFromFormat('d/m/Y H:i', $dataForm['publication']);
+        //$dataForm['description'] = !empty($dataForm['description']) ? $dataForm['description'] : '';
 
         $user = Auth::user();
 
-        $dataForm['user_id'] = $user->id;
-
-        if (!empty($user->category_id)) {
-            $dataForm['category_id'] = $user->category_id;
-            $dataForm['type'] = 2;
-        }
+        $dataForm['author_id'] = $user->id;
+        $create = $this->model->create($dataForm);
+        
+        $create->tags()->sync($tags);
+        $create->sections()->sync($sections);
 
         if(valid_file($request))
         {
-            $upload = upload_file($request, 'posts');
+            $upload = upload_file($request, 'news');
 
             if($upload){
-                $dataForm['file'] = $upload;
-                unset($dataForm['image']);
+                $image = $create->photo()->create([
+                    'image' => $upload,
+                ]);
+                $dataForm['cover_id'] = $image->id;
             }
         }
-
-        $create = $this->model->create($dataForm);
-
-        if(!$create) return redirect()->route('news.index')->with('fail', 'Houve um problema ao criar a postagem!');
+            
+        if(!$create->update($dataForm)) return redirect()->route('news.index')->with('fail', 'Houve um problema ao criar a postagem!');
 
         return redirect()->route('news.index')->with('success', 'Postagem criado com sucesso!');
     }
@@ -124,7 +121,7 @@ class PostController extends Controller
     {
         $model = $this->model->find($id);
 
-        return view('adimn.news.form', compact('post'));
+        return view('adimn.news.form', compact('model'));
     }
 
     /**
@@ -137,16 +134,18 @@ class PostController extends Controller
     {
         $user = Auth::user();
         $tags = Tag::orderBy('id', 'desc')->get();
+        $sections = Section::orderBy('id', 'desc')->get();
         $galleries = Gallery::orderBy('id', 'desc')->get();
         $videosgallery = VideoGallery::orderBy('id', 'desc')->get();
         $copyright = Copyright::orderBy('id', 'desc')->get();
         $model = $this->model->find($id);
-        $category = Category::orderBy('title')->get();
+        //dd($model);
         $data = ['post' => $model,
          'title' => $this->title,
           'subtitle' => 'Editar postagem',
             'user' => $user,
             'tags' => $tags,
+            'sections' => $sections,
             'galleries' => $galleries,
             'videosgallery' => $videosgallery,
             'copyright' => $copyright
@@ -162,33 +161,40 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostUpdateFormRequest $request, $id)
+    public function update(NewFormRequest $request, $id)
     {
         $model = $this->model->find($id);
 
-        $dataForm = $request->all();
-
+        $dataForm = $request->except('tags');
+        $tags = $request->get('tags', null);
+        $sections = $request->get('sections', null);
+        if(isset($dataForm['visible'])){
+            $dataForm['visible'] = 1;
+        }else{
+            $dataForm['visible'] = 0;
+        }
+        $user = Auth::user();
+        $dataForm['author_id'] = $user->id;
         $dataForm['publication'] = Carbon::createFromFormat('d/m/Y H:i', $dataForm['publication']);
-//        $dataForm['description'] = !empty($dataForm['description']) ? $dataForm['description'] : '';
         if(valid_file($request))
         {
             $upload = upload_file($request, 'news');
 
             if($upload){
-                $dataForm['file'] = $upload;
-                unset($dataForm['image']);
+                $model->photo()->update([
+                    'image' => $upload,
+                ]);
+                //$dataForm['cover_id'] = $image->id;
             }
         }
-
-        $user = Auth::user();
-
-        if (!empty($user->category_id)) {
-            $dataForm['category_id'] = $user->category_id;
-            $dataForm['type'] = 2;
-        }
+        //dd($tags);
+        if(!is_null($tags))
+        $model->tags()->sync($tags);
+        if(!is_null($sections))
+        $model->tags()->sync($sections);
 
         $update = $model->update($dataForm);
-
+        
         if(!$update) return redirect()->route('news.index')->with('fail', 'Houve um erro ao atualizar a postagem!');
 
         return redirect()->route('news.index')->with('success', 'Postagem atualizado com sucesso!');
@@ -222,11 +228,24 @@ class PostController extends Controller
         if($model->visible == 0){
             $model->visible = 1;
             $model->save();
-            return redirect('admin/news')->with('success', 'Ativado');
+            return redirect('admin/news')->with('success', 'Notícia Ativada');
         }else{
             $model->visible = 0;
             $model->save();
-            return redirect('admin/news')->with('success', 'Desativado');
+            return redirect('admin/news')->with('success', 'Notícia Desativada');
+        }
+    }
+    public function destaque($id)
+    {
+        $model = $this->model->findOrFail($id);
+        if($model->highlight == 0){
+            $model->highlight = 1;
+            $model->save();
+            return redirect('admin/news')->with('success', 'Notícia agora é destaque');
+        }else{
+            $model->highlight = 0;
+            $model->save();
+            return redirect('admin/news')->with('success', 'Notícia deixou de ser destaque');
         }
     }
 }

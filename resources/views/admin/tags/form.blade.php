@@ -19,7 +19,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">{{$subtitle}}</h3>
         </div>
-        <form role="form" method="POST" action="{{ isset($tag) ? route('tags.update', $tag->id) : route('categories.store')}}" enctype="multipart/form-data">
+        <form role="form" method="POST" action="{{ isset($tag) ? route('tags.update', $tag->id) : route('tags.store')}}" enctype="multipart/form-data">
             {!! csrf_field() !!}
             <div class="box-body">
                 <div class="row">

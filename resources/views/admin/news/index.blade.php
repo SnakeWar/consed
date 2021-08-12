@@ -24,10 +24,10 @@
 @section('content')
   <div class="box">
     <div class="box-header">
-      <a href="{{ route('posts.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
+      <a href="{{ route('news.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
     </div>
 
-    <form style="padding: 10px" method="get">
+    {{-- <form style="padding: 10px" method="get">
       @csrf
 
       <h3>Filtros</h3>
@@ -52,8 +52,8 @@
       </div>
 
       <button class="btn btn-primary" type="submit">Filtrar</button>
-      <a href="/admin/posts" class="btn btn-warning">Limpar filtros</a>
-    </form>
+      <a href="/admin/news" class="btn btn-warning">Limpar filtros</a>
+    </form> --}}
 
     @if(session()->has('success'))
       <div class="box-body">
@@ -70,8 +70,11 @@
           <th>Título</th>
           <th>Subtítulo</th>
           <th>Tag</th>
+          <th>Autor</th>
+          <th>Foto</th>
           <th>Publicado em</th>
           <th>Destaque</th>
+          <th>Ativado</th>
         </tr>
         </thead>
         <tbody>
@@ -80,22 +83,31 @@
               <td>{{ $item->id }}</td>
               <td>{{ $item->title }}</td>
               <td>{{ $item->subtitle }}</td>
-              <td>{{ $item->tag_id }}</td>
+              <td>{{ $item->tag->name }}</td>
+              <td>{{ $item->user->name }}</td>
+              <td>{{ $item->photo->image }}</td>
               <td>{{ convertdata_tosite($item->publication) }}</td>
-              <td>{{ $types[$item->highlight] }}</td>
-              <td class="action">
-                <form action="{{ route('posts.ativo', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
+              <td>
+                <form action="{{ route('news.destaque', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
                   @csrf
-                  @if( $item->status == 1 )
-
+                  @if( $item->highlight == 1 )
                     <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
                   @else
-
                     <button class="btn btn-danger" type="submit"><i class="fa fa-minus"></i></button>
                   @endif
                 </form>
-                <a href="{{ route('posts.edit', $item->id) }}" class="btn btn-primary">Editar</a>
-                <form action="{{ route('posts.destroy', $item->id)}}" method="post">
+              </td>
+              <td><form action="{{ route('news.ativo', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
+                @csrf
+                @if( $item->visible == 1 )
+                  <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
+                @else
+                  <button class="btn btn-danger" type="submit"><i class="fa fa-minus"></i></button>
+                @endif
+              </form></td>
+              <td class="action">
+                <a href="{{ route('news.edit', $item->id) }}" class="btn btn-primary">Editar</a>
+                <form action="{{ route('news.destroy', $item->id)}}" method="post">
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Delete</button>

@@ -115,6 +115,34 @@ return [
             'icon' => 'home'
         ],
         [
+            'text' => 'Galeria',
+            'url'  => 'admin/gallery',
+            'icon' => 'tag',
+            'can'  => 'read_gallery'
+        ],
+        [
+            'text' => 'Galeria de Vídeos',
+            'url'  => 'admin/videos_gallery',
+            'icon' => 'tag',
+            'can'  => 'read_videos_gallery'
+        ],
+        [
+            'text' => 'Copyrights',
+            'url'  => 'admin/copyrights',
+            'icon' => 'tag',
+            'can'  => 'read_copyrights'
+        ],
+        [
+            'text' => 'Tags',
+            'url'  => 'admin/tags',
+            'icon' => 'home'
+        ],
+        [
+            'text' => 'Notícias',
+            'url'  => 'admin/news',
+            'icon' => 'pencil'
+        ],
+        [
             'text' => 'Enquetes',
             'url'  => 'admin/polls',
             'icon' => 'archive',
@@ -144,12 +172,12 @@ return [
             'icon' => 'cube',
             'can'  => 'read_newsletters'
         ],
-        [
-            'text' => 'Notícias',
-            'url'  => 'admin/posts',
-            'icon' => 'pencil',
-            'can'  => 'read_posts'
-        ],
+        // [
+        //     'text' => 'Notícias',
+        //     'url'  => 'admin/posts',
+        //     'icon' => 'pencil',
+        //     'can'  => 'read_posts'
+        // ],
         [
             'text' => 'Banners',
             'url'  => 'admin/banners',
