@@ -35,6 +35,7 @@ class Gallery extends Model
     {
         return $this->morphToMany(Tag::class, 'resource', 'tagging')
         ->withTimestamps()
+        ->wherePivot('resource_type', 'consisti_gallery_tag')
         ;
     }
 }

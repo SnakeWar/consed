@@ -115,6 +115,11 @@ return [
             'icon' => 'home'
         ],
         [
+            'text' => 'Pessoas',
+            'url'  => 'admin/persons',
+            'icon' => 'home'
+        ],
+        [
             'text' => 'Galeria',
             'url'  => 'admin/gallery',
             'icon' => 'tag',
@@ -125,6 +130,12 @@ return [
             'url'  => 'admin/videos_gallery',
             'icon' => 'tag',
             'can'  => 'read_videos_gallery'
+        ],
+        [
+            'text' => 'Parceiros',
+            'url'  => 'admin/partners',
+            'icon' => 'tag',
+            'can'  => 'read_partners'
         ],
         [
             'text' => 'Copyrights',

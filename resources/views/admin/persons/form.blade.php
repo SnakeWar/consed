@@ -13,8 +13,8 @@
 
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-address-card"></i> Home</a></li>
-        <li><a href="{{ route('news.index') }}">Notícias</a></li>
-        <li class="active">{{ isset($post) ? 'Editar Notícia' : 'Adicionar Notícia' }}</li>
+        <li><a href="{{ route($view.'.index') }}">Notícias</a></li>
+        <li class="active">{{ isset($model) ? 'Editar '.$subtitle : 'Criar '.$subtitle }}</li>
     </ol>
 
 @stop
@@ -22,92 +22,101 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">{{ isset($post) ? 'Editar Postagem' : 'Adicionar Postagem' }}</h3>
+            <h3 class="box-title">{{ isset($model) ? 'Editar '.$subtitle : 'Adicionar '.$subtitle }}</h3>
         </div>
-        <form role="form" method="POST" action="{{ isset($post) ? route('news.update', $post->id) : route('news.store')}}" enctype="multipart/form-data">
+        <form role="form" method="POST" action="{{ isset($model) ? route($view.'.update', $model->id) : route($view.'.store')}}" enctype="multipart/form-data">
             @csrf
-            @if(!empty($post))
+            @if(!empty($model))
                 @method('PUT')
             @endif
             <div class="box-body">
-                
                 <div class="row">
-                    <div class="col-lg-3">
-                        <div class="form-group {{ $errors->has('visible') ? 'has-error' : '' }}">
-                            <label for="visible">Notícia Pública?</label><br>
-                            <input type="checkbox" name="visible" id="visible" class="" {{ isset($post) ? (($post->visible == 1) ? 'checked' : '') : '' }} disabled>
-                            @if ($errors->has('visible'))
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                            <label for="inputTitle">Nome*</label>
+                            <input type="text" name="name" class="form-control" id="inputTitle" placeholder="Nome" value="{{ isset($model) ? $model->name : old('name') }}">
+                            @if ($errors->has('name'))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('visible') }}</strong>
+                                <strong>{{ $errors->first('name') }}</strong>
                             </span>
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group {{ $errors->has('copyright_id') ? 'has-error' : '' }}">
-                            <label for="inputTag">Copyright</label><br>
-                            <select name="copyright_id" id="inputTag" class="select2 form-control">
-                                <option value="">Selecione uma opção</option>
-                                @foreach ($copyright as $item)
-                                    <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->copyright_id) ? 'selected' : '') : '' }}>{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('copyright_id'))
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('cpf') ? 'has-error' : '' }}">
+                            <label for="inputTitle">CPF*</label>
+                            <input type="text" name="cpf" class="form-control" id="inputTitle" placeholder="CPF" value="{{ isset($model) ? $model->cpf : old('cpf') }}">
+                            @if ($errors->has('cpf'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('copyright_id') }}</strong>
-                                </span>
+                                <strong>{{ $errors->first('cpf') }}</strong>
+                            </span>
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group @error('publication') has-error @enderror">
-                            <label for="inputData">Publicada em*</label>
-                            <input type="text" name="publication" class="form-control datetimepicker" id="inputData" placeholder="" value="{{ isset($post) ? \Carbon\Carbon::parse($post->publication)->format('d/m/Y H:i') : old('publication') }}">
-                            @error('publication')
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('land_line') ? 'has-error' : '' }}">
+                            <label for="inputTitle">Telefone Fixo*</label>
+                            <input type="text" name="land_line" class="form-control" id="inputTitle" placeholder="Telefone Fixo" value="{{ isset($model) ? $model->land_line : old('land_line') }}">
+                            @if ($errors->has('land_line'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('land_line') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('mobile_phone') ? 'has-error' : '' }}">
+                            <label for="inputTitle">Celular*</label>
+                            <input type="text" name="mobile_phone" class="form-control" id="inputTitle" placeholder="Celular" value="{{ isset($model) ? $model->mobile_phone : old('mobile_phone') }}">
+                            @if ($errors->has('mobile_phone'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('mobile_phone') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group {{ $errors->has('corporate_mobile') ? 'has-error' : '' }}">
+                            <label for="inputTitle">Celular Corporativo*</label>
+                            <input type="text" name="corporate_mobile" class="form-control" id="inputTitle" placeholder="Celular Corporativo" value="{{ isset($model) ? $model->corporate_mobile : old('corporate_mobile') }}">
+                            @if ($errors->has('corporate_mobile'))
+                                <span class="help-block">
+                                <strong>{{ $errors->first('corporate_mobile') }}</strong>
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group @error('birth') has-error @enderror">
+                            <label for="inputData">Data de Nascimento*</label>
+                            <input type="text" name="birth" class="form-control datetimepicker" id="inputData" placeholder="" value="{{ isset($model) ? \Carbon\Carbon::parse($model->birth)->format('d/m/Y') : old('birth') }}">
+                            @error('birth')
                             <span class="help-block">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group {{ $errors->has('tag_id') ? 'has-error' : '' }}">
-                            <label for="inputTag">Chapéu</label><br>
-                            <select name="tag_id" id="inputTag" class="select2 form-control">
-                                <option value="">Selecione uma Tag</option>
-                                @foreach ($tags as $item)
-                                    <option value="{{ $item->id }}" {{ isset($post) ? (($item->id == $post->tag_id) ? 'selected' : '') : '' }}>{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('tag_id'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('tag_id') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-                            <label for="inputTitle">Título*</label>
-                            <input type="text" name="title" class="form-control" id="inputTitle" placeholder="Título da Postagem" value="{{ isset($post) ? $post->title : old('title') }}">
-                            @if ($errors->has('title'))
+                        <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
+                            <label for="inputTitle">E-mail*</label>
+                            <input type="email" name="email" class="form-control" id="inputTitle" placeholder="E-mail" value="{{ isset($model) ? $model->email : old('email') }}">
+                            @if ($errors->has('email'))
                                 <span class="help-block">
-                                <strong>{{ $errors->first('title') }}</strong>
-                            </span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="form-group {{ $errors->has('subtitle') ? 'has-error' : '' }}">
-                            <label for="inputSubtitle">Subtítulo</label>
-                            <input type="text" name="subtitle" class="form-control" id="inputSubtitle" placeholder="Descrição da Postagem" value="{{ isset($post) ? $post->subtitle : old('subtitle') }}">
-                            @if ($errors->has('subtitle'))
-                                <span class="help-block">
-                                <strong>{{ $errors->first('subtitle') }}</strong>
+                                <strong>{{ $errors->first('email') }}</strong>
                             </span>
                             @endif
                         </div>
@@ -116,16 +125,16 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group @error('file') has-error @enderror">
-                            <label for="inputImage">Capa da Notícia*</label>
+                            <label for="inputImage">Imagem*</label>
                             <input type="file" name="file" class="form-control" id="inputImage">
                             @error('file')
                             <span class="help-block">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
-                            @if(isset($post->file))
+                            @if(isset($model->file))
                                 <div class="box-body">
-                                    <img class="img-panel img-responsive pad" src="{{ asset("storage/news/{$post->photo->image}") }}" alt="{{ $post->title }}">
+                                    <img class="img-panel img-responsive pad" src="{{ asset("storage/persons/{$model->image}") }}" alt="{{ $model->title }}">
                                 </div>
                             @endif
                         </div>
@@ -133,10 +142,10 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="form-group @error('content') has-error @enderror">
-                            <label for="inputContent">Conteúdo*</label>
-                            <textarea name="content" class="form-control" id="editor1" placeholder="" rows="4">{{ isset($post) ? $post->content : old('content') }}</textarea>
-                            @error('content')
+                        <div class="form-group @error('profile') has-error @enderror">
+                            <label for="inputContent">Perfil*</label>
+                            <textarea name="profile" class="form-control" id="editor1" placeholder="" rows="4">{{ isset($model) ? $model->profile : old('profile') }}</textarea>
+                            @error('profile')
                             <span class="help-block">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -144,14 +153,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group {{ $errors->has('gallery_id') ? 'has-error' : '' }}">
                             <label for="inputGallery">Galeria de Imagens</label>
                             <select name="gallery_id" id="inputGallery" class="select2 form-control">
                                 <option value="">Selecione uma opção</option>
                                 @foreach ($galleries as $item)
-                                    <option value="{{ $item['id'] }}" {{ isset($post) ? (($item['id'] == $post->gallery_id) ? 'selected' : '') : '' }}>{{ $item['title'] }}</option>
+                                    <option value="{{ $item['id'] }}" {{ isset($model) ? (($item['id'] == $model->gallery_id) ? 'selected' : '') : '' }}>{{ $item['title'] }}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('gallery_id'))
@@ -167,7 +176,7 @@
                             <select name="video_gallery_id" id="inputVideoGallery" class="select2 form-control">
                                 <option value="">Selecione uma opção</option>
                                 @foreach ($videosgallery as $item)
-                                    <option value="{{ $item['id'] }}" {{ isset($post) ? (($item['id'] == $post->video_gallery_id) ? 'selected' : '') : '' }}>{{ $item['title'] }}</option>
+                                    <option value="{{ $item['id'] }}" {{ isset($model) ? (($item['id'] == $model->video_gallery_id) ? 'selected' : '') : '' }}>{{ $item['title'] }}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('video_gallery_id'))
@@ -183,7 +192,7 @@
                             <select name="tags[]" id="inputTags" class="select2 form-control" multiple>
                                 <option value=""></option>
                                 @foreach ($tags as $item)
-                                    <option value="{{ $item->id }}" {{ isset($post) ? (($post->tags->contains($item)) ? 'selected' : '') : '' }}>{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}" {{ isset($model) ? (($model->tags->contains($item)) ? 'selected' : '') : '' }}>{{ $item->name }}</option>
                                 @endforeach
                             </select>
                             @if ($errors->has('title'))
@@ -193,7 +202,7 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </div> --}}
             
             </div>
             <!-- /.box-body -->

@@ -15,6 +15,9 @@
 
 @section('content')
     <div class="box">
+        <div class="box-header">
+            <a href="{{ route($view.'.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
+        </div>
         @if(session()->has('success'))
             <div class="box-body">
                 <div class="alert alert-success">
@@ -28,34 +31,37 @@
                 <tr>
                     <th>Data de criação</th>
                     <th>Nome</th>
-                    <th>Email</th>
-                    <th>Telefone</th>
-                    <th>Cidade</th>
-                    <th>Estado</th>
-                    <th>Tipo de parceiro</th>
-                    <th>Lido</th>
+                    <th>
+                        Site
+                    </th>
+                    <th>
+                        Ativado?
+                    </th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($lista as $item)
+                @foreach ($model as $item)
                     <tr>
                         <td>{{ convertdata_tosite($item->created_at) }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->email }}</td>
-                        <td>{{ $item->phone }}</td>
-                        <td>{{ $item->city }}</td>
-                        <td>{{ $item->state }}</td>
-                        <td>{{ $item->partner_type }}</td>
-                        <td>{{ $item->lido == 1 ? 'Lido' : "Não lido" }}</td>
+                        <td>{{ $item->url }}</td>
+                        <td>
+                            <form action="{{ route($view.'.ativo', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
+                              @csrf
+                              @if( $item->published == 1 )
+                                <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
+                              @else
+                                <button class="btn btn-danger" type="submit"><i class="fa fa-minus"></i></button>
+                              @endif
+                            </form>
+                          </td>
                         <td class="action">
-                            <a href="{{ route('partners.show', $item->id) }}" class="btn btn-primary">Visualizar</a>
-                            <form action="{{ route('partners.destroy', $item->id)}}" method="post">
+                            <a href="{{ route($view.'.edit', $item->id) }}" class="btn btn-primary">Editar</a>
+                            <form action="{{ route($view.'.destroy', $item->id)}}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                @can("delete_".$module, App\Models\Contact::class)
                                     <button class="btn btn-danger" type="submit">Delete</button>
-                                @endcan
                             </form>
                         </td>
                     </tr>
@@ -63,7 +69,7 @@
                 </tbody>
             </table>
 
-            {!! $lista->links() !!}
+            {!! $model->links() !!}
 
         </div>
         <!-- /.box-body -->

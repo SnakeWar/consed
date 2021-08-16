@@ -1,12 +1,6 @@
 @extends('adminlte::page')
 
-@php
-  $types = [
-    0 => 'Secundária',
-    1 => 'Destaque',
-    2 => 'Outra',
-];
-@endphp
+
 
 @section('title', $title)
 
@@ -24,7 +18,7 @@
 @section('content')
   <div class="box">
     <div class="box-header">
-      <a href="{{ route('news.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
+      <a href="{{ route($view.'.create') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Adicionar</a>
     </div>
 
     {{-- <form style="padding: 10px" method="get">
@@ -67,28 +61,26 @@
         <thead>
         <tr>
           <th>#</th>
-          <th>Título</th>
-          <th>Subtítulo</th>
-          <th>Tag</th>
-          <th>Autor</th>
-          <th>Foto</th>
-          <th>Publicado em</th>
-          <th>Destaque?</th>
-          <th>Ativado?</th>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Telefone Fixo</th>
+          <th>Celular</th>
+          <th>E-mail</th>
+          <th>Data Nascimento</th>
         </tr>
         </thead>
         <tbody>
-          @foreach ($lista as $item)
+          @foreach ($model as $item)
             <tr>
               <td>{{ $item->id }}</td>
-              <td>{{ $item->title }}</td>
-              <td>{{ $item->subtitle }}</td>
-              <td>{{ $item->tag->name }}</td>
-              <td>{{ $item->user->name }}</td>
-              <td>{{ $item->photo->image }}</td>
-              <td>{{ convertdata_tosite($item->publication) }}</td>
+              <td>{{ $item->name }}</td>
+              <td>{{ $item->cpf }}</td>
+              <td>{{ $item->land_phone }}</td>
+              <td>{{ $item->mobile_phone }}</td>
+              <td>{{ $item->email }}</td>
+              <td>{{ convertdata_tosite($item->birth, false) }}</td>
               <td>
-                <form action="{{ route('news.destaque', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
+                <form action="{{ route($view.'.destaque', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
                   @csrf
                   @if( $item->highlight == 1 )
                     <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
@@ -97,34 +89,13 @@
                   @endif
                 </form>
               </td>
-              <td>
-                @if(Auth::user()->roles->contains('title', 'Administrador'))
-                <form action="{{ route('news.ativo', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
-                  @csrf
-                  @if( $item->visible == 1 )
-                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
-                  @else
-                    <button class="btn btn-danger" type="submit"><i class="fa fa-minus"></i></button>
-                  @endif
-                </form>
-                @else
-                  <p>Sem permissão</p>
-                @endif
-              </td>
-              <td class="action">
-                <a href="{{ route('news.edit', $item->id) }}" class="btn btn-primary">Editar</a>
-                <form action="{{ route('news.destroy', $item->id)}}" method="post">
-                  @csrf
-                  @method('DELETE')
-                  <button class="btn btn-danger" type="submit">Delete</button>
-                </form>
-              </td>
+              
             </tr>
           @endforeach
         </tbody>
       </table>
 
-      {!! $lista->appends(app('request')->query())->links() !!}
+      {!! $model->appends(app('request')->query())->links() !!}
 
     </div>
     <!-- /.box-body -->

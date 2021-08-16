@@ -77,11 +77,15 @@ class NewController extends Controller
         $dataForm = $request->all();
         $tags = $request->get('tags', null);
         $sections = $request->get('sections', null);
-        if(isset($dataForm['visible'])){
-            $dataForm['visible'] = 1;
-        }else{
+        if(Auth::user()->roles->contains('title', 'Administrador')):
+            if(isset($dataForm['visible'])):
+                $dataForm['visible'] = 1;
+            else:
+                $dataForm['visible'] = 0;
+            endif;
+        else:
             $dataForm['visible'] = 0;
-        }
+        endif;
         //dd($dataForm);
         $dataForm['publication'] = Carbon::createFromFormat('d/m/Y H:i', $dataForm['publication']);
         //$dataForm['description'] = !empty($dataForm['description']) ? $dataForm['description'] : '';
@@ -168,25 +172,28 @@ class NewController extends Controller
         $dataForm = $request->except('tags');
         $tags = $request->get('tags', null);
         $sections = $request->get('sections', null);
-        if(isset($dataForm['visible'])){
-            $dataForm['visible'] = 1;
-        }else{
+        
+        if(Auth::user()->roles->contains('title', 'Administrador')):
+            if(isset($dataForm['visible'])):
+                $dataForm['visible'] = 1;
+            else:
+                $dataForm['visible'] = 0;
+            endif;
+        else:
             $dataForm['visible'] = 0;
-        }
+        endif;
         $user = Auth::user();
         $dataForm['author_id'] = $user->id;
         $dataForm['publication'] = Carbon::createFromFormat('d/m/Y H:i', $dataForm['publication']);
-        if(valid_file($request))
-        {
+        if(valid_file($request)):
             $upload = upload_file($request, 'news');
-
-            if($upload){
+            if($upload):
                 $model->photo()->update([
                     'image' => $upload,
                 ]);
                 //$dataForm['cover_id'] = $image->id;
-            }
-        }
+            endif;
+        endif;
         //dd($tags);
         if(!is_null($tags))
         $model->tags()->sync($tags);
@@ -225,14 +232,20 @@ class NewController extends Controller
     public function ativo($id)
     {
         $model = $this->model->findOrFail($id);
-        if($model->visible == 0){
-            $model->visible = 1;
-            $model->save();
-            return redirect('admin/news')->with('success', 'Notícia Ativada');
-        }else{
-            $model->visible = 0;
-            $model->save();
-            return redirect('admin/news')->with('success', 'Notícia Desativada');
+        
+        if(Auth::user()->roles->contains('title', 'Administrador')){
+            if($model->visible == 0){
+                $model->visible = 1;
+                $model->save();
+                return redirect('admin/news')->with('success', 'Notícia Ativada');
+            }else{
+                $model->visible = 0;
+                $model->save();
+                return redirect('admin/news')->with('success', 'Notícia Desativada');
+            }
+        }
+        else{
+            return redirect('admin/news')->with('success', 'Seu usuário não tem permissão');
         }
     }
     public function destaque($id)

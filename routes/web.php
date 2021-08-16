@@ -47,9 +47,14 @@ Route::group(['middleware' => ['auth', 'log'], 'namespace' => 'Admin', 'prefix' 
     Route::resource('pages', 'PageController')->middleware('can:read_pages');
     Route::post('pages/ativo/{id}', 'PageController@ativo')->name('pages.ativo')->middleware('can:update_pages');
     
+    Route::resource('persons', 'PersonController')->middleware('can:read_persons');
+
     Route::resource('news', 'NewController')->middleware('can:read_news');
     Route::post('news/destaque/{id}', 'NewController@destaque')->name('news.destaque')->middleware('can:update_news');
     Route::post('news/ativo/{id}', 'NewController@ativo')->name('news.ativo')->middleware('can:update_news');
+
+    Route::resource('partners', 'PartnerController')->middleware('can:read_partners');
+    Route::post('partners/ativo/{id}', 'PartnerController@ativo')->name('partners.ativo')->middleware('can:update_partners');
 
     Route::resource('tags', 'TagController')->middleware('can:read_tags');
 
@@ -113,7 +118,7 @@ Route::group(['middleware' => ['auth', 'log'], 'namespace' => 'Admin', 'prefix' 
     Route::resource('modules', 'ModuleController')->middleware('can:read_modules');
     Route::post('/modules/{id}', 'ModuleController@update');
 
-    Route::resource('partners', 'PartnerController')->middleware('can:read_partners');
+    //Route::resource('partners', 'PartnerController')->middleware('can:read_partners');
 
 });
 
