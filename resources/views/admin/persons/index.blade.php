@@ -75,18 +75,26 @@
               <td>{{ $item->id }}</td>
               <td>{{ $item->name }}</td>
               <td>{{ $item->cpf }}</td>
-              <td>{{ $item->land_phone }}</td>
+              <td>{{ $item->land_line }}</td>
               <td>{{ $item->mobile_phone }}</td>
               <td>{{ $item->email }}</td>
               <td>{{ convertdata_tosite($item->birth, false) }}</td>
               <td>
-                <form action="{{ route($view.'.destaque', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
+                {{-- <form action="{{ route($view.'.ativo', ['id' => $item->id])}}" style="margin-right: 5px" method="post">
                   @csrf
-                  @if( $item->highlight == 1 )
+                  @if( $item->status == 1 )
+
                     <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
                   @else
+
                     <button class="btn btn-danger" type="submit"><i class="fa fa-minus"></i></button>
                   @endif
+                </form> --}}
+                <a href="{{ route($view.'.edit', $item->id) }}" class="btn btn-primary">Editar</a>
+                <form action="{{ route($view.'.destroy', $item->id)}}" method="post">
+                  @csrf
+                  @method('DELETE')
+                  <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
               </td>
               

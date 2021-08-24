@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PartnerFormRequest;
+use App\Http\Requests\PersonFormRequest;
 use App\Models\Person;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PersonController extends Controller
 {
@@ -58,16 +60,22 @@ class PersonController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PartnerFormRequest $request)
+    public function store(PersonFormRequest $request)
     {
-        $dataForm = $request->all();
-        if(isset($dataForm['image']))
+        $dataForm = $request->except(['city2', 'alias','street', 'number', 'complement', 'district', 'postcode', 'city']);
+        $dataAddress = $request->only(['city2', 'alias','street', 'number', 'complement', 'district', 'postcode', 'city']);
+        $dataForm['birth'] = Carbon::createFromFormat('d/m/Y', $dataForm['birth']);
+        if(isset($dataForm['file']))
         {
-            $upload = upload_file($request, 'partners');
+            $upload = upload_file($request, 'persons');
             $dataForm['image'] = $upload;
+            unset($dataForm['file']);
         }
+        $address = $this->model->address()->create($dataAddress);
+        $dataForm['mail_address_id'] = $address->id;
         $model = $this->model->create($dataForm);
-
+        
+        //dd($model);
         if(!$model) return redirect($this->redirect)->with('fail', 'Houve um problema ao cadastrar o(a)!'.$this->subtitle);
 
         return redirect($this->redirect)->with('success', $this->subtitle.' cadastrada com sucesso!');
@@ -106,20 +114,24 @@ class PersonController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PartnerFormRequest $request, $id)
+    public function update(PersonFormRequest $request, $id)
     {
-        $dataForm = $request->all();
+        $dataForm = $request->except(['city2', 'alias','street', 'number', 'complement', 'district', 'postcode', 'city']);
+        $dataAddress = $request->only(['city2', 'alias','street', 'number', 'complement', 'district', 'postcode', 'city']);
+        $dataForm['birth'] = Carbon::createFromFormat('d/m/Y', $dataForm['birth']);
         //dd($dataForm);
         $model = $this->model->findOrFail($id);
         if(valid_file($request)):
-            $upload = upload_file($request, 'partners');
+
+            $upload = upload_file($request, 'persons');
             if($upload):
                 $dataForm['image'] = $upload;
                 unset($dataForm['file']);
             endif;
         endif;
         $updated = $model->update($dataForm);
-
+        $model->address()->update($dataAddress);
+        //dd($model);
         if(!$updated) return redirect($this->redirect)->with('fail', 'Houve um problema ao editar o(a) '.$this->subtitle. '!');
 
         return redirect($this->redirect)->with('success', $this->subtitle.' editado(a) com sucesso!');

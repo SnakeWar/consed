@@ -12,8 +12,10 @@ $(function () {
     $('.cnpj').inputmask('99.999.999/9999-99', { 'placeholder': '99.999.999/9999-99' });
 
     $('.telefone').inputmask('(99) 99999-9999', { 'placeholder': '(99) 99999-9999' });
+    $('.telefone-fixo').inputmask('(99) 9999-9999', { 'placeholder': '(99) 9999-9999' });
 
     $('.datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('.cep').inputmask('99.999-999', { 'placeholder': '99.999-999' })
 
     $(".amount").maskMoney({symbol:'R$ ', thousands:'.', decimal:','});
 

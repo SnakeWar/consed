@@ -17,9 +17,13 @@ class Person extends Model
         $this->attributes['name'] = $value;
         $this->attributes['name_slug'] = $matchs ? $slug . '-' . $matchs : $slug;
     }
-    public function uniqueNameSlug($slug)
+    public function uniqueSlug($slug)
     {
-        $matchs = $this->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->count();
+        $matchs = $this->whereRaw("name_slug REGEXP '^{$slug}(-[0-9]*)?$'")->count();
         return $matchs;
+    }
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'mail_address_id');
     }
 }
